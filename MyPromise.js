@@ -5,7 +5,7 @@ const STATE = {
 }
 class myPromise {
     #thenCbs = []
-    #state = PENDING
+    #state = STATE.PENDING
 
     constructor(cb) {
         try {

@@ -3,15 +3,21 @@ const STATE = {
     REJECTED: 'rejected',
     PENDING: 'pending'
 }
+
+// Ref: https://www.youtube.com/watch?v=1l4wHWQCCIc
 class MyPromise {
     #thenCbs = []
     #catchCbs = []
     #state = STATE.PENDING
     #value
+    // binding: 13:55
+    // Why we need to bind this ?
+    #onSuccessBind = this.#onSuccess.bind(this)
+    #onFailBind = this.#onFail.bind(this)
 
     constructor(cb) {
         try {
-            cb(this.#onSuccess, this.#onFail)
+            cb(this.#onSuccessBind, this.#onFailBind)
         } catch (e) {
             this.#onFail(e)
         }
@@ -49,11 +55,20 @@ class MyPromise {
         this.#runCallbacks()
     }
 
-    then(cb) {
-        this.#thenCbs.push(cb)
+    then(thenCb, catchCb) {
+        if (thenCb != null) this.#thenCbs.push(thenCb)
+        if (catchCb != null) this.#catchCbs.push(catchCb)
 
         // Why run callbacks here ?
         this.#runCallbacks()
+    }
+
+    catch(cb) {
+        this.then(undefined, cb)
+    }
+
+    finally(cb) {
+
     }
 }
 
